@@ -1,0 +1,118 @@
+<form #f="ngForm" (ngSubmit)="submit(f)">
+  <div class="row">
+    <div class="form-group col-md-12">
+      <label for="recipeName">Nom</label>
+      <input
+        class="form-control"
+        type="text"
+        id="recipeName"
+        name="name"
+        [(ngModel)]="recipe.name"
+        #name="ngModel"
+        required
+        pInputText>
+      <p-message severity="error" text="Ce champ est requis" [hidden]="name.valid || name.pristine"></p-message>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-5 col-12 mb-2">
+      <img [src]="recipe.image" id="recipePic" style="border: 2px solid #000000">
+      <input
+        class="form-control"
+        type="text"
+        id="imageUrl"
+        name="imageUrl"
+        placeholder="URL de l'image"
+        [(ngModel)]="recipe.imageUrl"
+        pInputText>
+    </div>
+    <div class="col-md-7 col-12">
+      <div class="time-input">
+        <label for="nbPortions">Portions:</label>
+        <input
+          type="number"
+          id="nbPortions"
+          name="nbPortions"
+          [(ngModel)]="recipe.nbPortions"
+          min="1"
+          pInputText>
+      </div>
+      <div class="time-input">
+        <label>Temps de préparation:</label>
+        <input
+          type="number"
+          id="prepTime"
+          name="prepTime"
+          [(ngModel)]="recipe.prepTime"
+          required
+          pInputText>
+        min.
+      </div>
+      <div class="time-input">
+        <label>Temps de cuisson:</label>
+        <input
+          type="number"
+          id="cookTime"
+          name="cookTime"
+          [(ngModel)]="recipe.cookTime"
+          pInputText>
+        min.
+      </div>
+      <button type="button" *ngIf="!showExtraTime" (click)="showExtraTime = true" pButton label="+ de temps"></button>
+      <div *ngIf="showExtraTime" class="time-input">
+        <label 
+          class="extraTimeLabel" 
+          (click)="extraTimeLabelEditing = true"
+          *ngIf="!extraTimeLabelEditing">
+          {{recipe.extraTimeLabel}}: <i class="fa fa-pencil"></i>
+        </label>
+
+        <input
+          *ngIf="extraTimeLabelEditing"
+          type="text"
+          id="extraTimeLabel"
+          name="extraTimeLabel"
+          [(ngModel)]="recipe.extraTimeLabel"
+          (keypress)="onExtraTimeLabelKeypress($event)"
+          pInputText>
+        <input
+          type="number"
+          id="extraTime"
+          name="extraTime"
+          [(ngModel)]="recipe.extraTime"
+          pInputText>
+        min.
+      </div>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="ingredients">Ingrédients:</label>
+    <textarea
+      class="form-control"
+      id="ingredients"
+      name="ingredients"
+      [(ngModel)]="recipe.ingredients"
+      required
+      pInputTextarea></textarea>
+  </div>
+  <div class="form-group">
+    <label for="preparation">Préparation:</label>
+    <textarea
+      class="form-control"
+      id="preparation"
+      name="preparation"
+      [(ngModel)]="recipe.preparation"
+      required
+      pInputTextarea></textarea>
+  </div>
+  <div class="form-group">
+    <label for="tags">Choose tags</label>
+    <app-tag-selector id="tags" [(ngModel)]="recipe.tags" name="tags"></app-tag-selector>
+  </div>
+  <div class="form-group">
+    <button type="submit" pButton label="Ok"></button>
+    <button type="button" pButton label="Annuler" class="ui-button-secondary" (click)="done()"></button>
+  </div>
+</form>

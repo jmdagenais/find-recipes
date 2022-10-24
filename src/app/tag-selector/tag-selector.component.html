@@ -1,0 +1,8 @@
+<p-chips [(ngModel)]="selectedTags" (onRemove)="changeItemList($event)" (onAdd)="changeItemList($event)"></p-chips>
+<div class="ui-autocomplete-panel ui-corner-all tag-selection-panel ui-widget" *ngIf="suggestions.length > 0">
+  <ul class="ui-autocomplete-list ui-autocomplete-items ui-corner-all ui-helper-reset">
+    <li class="ui-autocomplete-list-item" *ngFor="let tag of suggestions" (click)="selectTag(tag)">
+      <span>{{tag}}</span>
+    </li>
+  </ul>
+</div>

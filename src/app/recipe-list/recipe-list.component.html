@@ -1,0 +1,33 @@
+<span>Filtrer par catégorie</span>
+<span class="ui-fluid">
+  <p-autoComplete
+    [(ngModel)]="selectedTags"
+    [suggestions]="displayTags"
+    (completeMethod)="onSearchTag($event)"
+    (onSelect)="getRecipesByTag()"
+    (onUnselect)="getRecipesByTag()"
+    [multiple]="true"></p-autoComplete>
+  <br />
+  <div class="d-flex justify-content-between">
+    <!--<h4>Recipes:</h4>-->
+    <a routerLink="/recipes/add" *ngIf="isAuthenticated()">Ajouter une recette</a>
+  </div>
+  <ul class="list-group">
+    <li class="list-group-item d-flex" *ngFor="let recipe of recipes">
+      <div class="image-container d-none d-sm-block">
+        <img [src]="recipe.imageUrl || 'assets/images/assiette.jpg'" height="100">
+      </div>
+      <div>
+        <a class="recipe-name-link" [routerLink]="['/recipes', recipe._id]">{{recipe.name}}</a>
+        <div class="d-none d-sm-flex time-indicator">
+          <span>préparation: {{recipe.prepTime | timeFormat}}</span>
+          <span *ngIf="recipe.cookTime > 0">cuisson: {{recipe.cookTime | timeFormat}}</span>
+          <span *ngIf="recipe.extraTime > 0">{{recipe.extraTimeLabel}}: {{recipe.extraTime | timeFormat}}</span>
+        </div>
+        <div class="d-flex tags-list">
+          <span *ngFor="let tag of recipe.tags"><a (click)="onSelectTag(tag)">{{ tag }}</a></span>
+        </div>
+      </div>
+    </li>
+  </ul>
+</span>

@@ -1,0 +1,45 @@
+form {
+  color: red;
+}
+
+.badge {
+  margin-top: 5px;
+  margin-right: 5px;
+}
+
+#recipePic {
+  width: 100%;
+}
+
+.time-input {
+  &:not(:last-child) {
+    margin-bottom: 3px;
+  }
+
+  label {
+    width: 10em;
+  }
+
+  input {
+    width: 5em;
+    margin: 0 1em 0 1em;
+  }
+
+}
+
+.extraTimeLabel {
+  i {
+    visibility: hidden;
+  }
+
+  &:hover {
+    i {
+      visibility: visible;
+    }
+  }
+}
+
+#extraTimeLabel {
+  width: 9rem;
+  margin-left: 0;
+}

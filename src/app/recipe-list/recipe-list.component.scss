@@ -1,0 +1,40 @@
+.list-group-item {
+
+  a {
+    color: #333;
+  }
+
+  .recipe-name-link {
+    font-weight: bold;
+    margin-right: 24px;
+  }
+
+  .tags-list {
+
+    span {
+      font-size: small;
+      margin-right: 1em;
+      text-decoration: underline;
+      cursor: pointer;
+      a {
+        color: #999;
+      }
+    }
+  }
+
+  .image-container {
+    width: 220px;
+    text-align: center;
+    vertical-align: middle;
+  }
+
+  .time-indicator {
+    span {
+      margin-right: 12px;
+    }
+  }
+}
+
+.list-group {
+  margin-top: 1em;
+}

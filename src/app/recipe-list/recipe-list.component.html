@@ -1,12 +1,55 @@
 <span>Filtrer par catégorie</span>
 <span class="ui-fluid">
-  <p-autoComplete
+  <!-- <p-autoComplete
     [(ngModel)]="selectedTags"
     [suggestions]="displayTags"
     (completeMethod)="onSearchTag($event)"
     (onSelect)="getRecipesByTag()"
     (onUnselect)="getRecipesByTag()"
-    [multiple]="true"></p-autoComplete>
+    [multiple]="true"></p-autoComplete> -->
+
+    <!-- <mat-autocomplete #auto="matAutocomplete">
+      <mat-option *ngFor="let tag of allTags" [value]="tag">
+        {{tag}}
+      </mat-option>
+    </mat-autocomplete>
+
+    <input type="text"
+       placeholder="Pick one"
+       aria-label="Number"
+       matInput
+       formControlName="tags"
+       [matAutocomplete]="auto"> -->
+
+       <!-- <mat-form-field class="example-chip-list" appearance="fill" [formGroup]="formGroup">
+        <mat-label>Favorite Fruits</mat-label>
+        <mat-chip-list #chipList aria-label="Fruit selection">
+          <mat-chip
+            *ngFor="let tag of selectedTags"
+            (removed)="remove(tag)">
+            {{tag}}
+            <button matChipRemove>
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip>
+          <input
+            placeholder="New fruit..."
+            #fruitInput
+            formControlName="tags"
+            [matAutocomplete]="auto"
+            [matChipInputFor]="chipList"
+            [matChipInputSeparatorKeyCodes]=""
+            (matChipInputTokenEnd)="add($event)">
+        </mat-chip-list>
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+          <mat-option *ngFor="let tag of allTags" [value]="tag">
+            {{ tag }}
+          </mat-option>
+        </mat-autocomplete>
+      </mat-form-field> -->
+
+      <app-tag-selector></app-tag-selector>
+
   <br />
   <div class="d-flex justify-content-between">
     <!--<h4>Recipes:</h4>-->

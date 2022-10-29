@@ -1,8 +1,34 @@
-<p-chips [(ngModel)]="selectedTags" (onRemove)="changeItemList($event)" (onAdd)="changeItemList($event)"></p-chips>
+<!-- <p-chips [(ngModel)]="selectedTags" (onRemove)="changeItemList($event)" (onAdd)="changeItemList($event)"></p-chips>
 <div class="ui-autocomplete-panel ui-corner-all tag-selection-panel ui-widget" *ngIf="suggestions.length > 0">
   <ul class="ui-autocomplete-list ui-autocomplete-items ui-corner-all ui-helper-reset">
     <li class="ui-autocomplete-list-item" *ngFor="let tag of suggestions" (click)="selectTag(tag)">
       <span>{{tag}}</span>
     </li>
   </ul>
-</div>
+</div> -->
+
+<mat-form-field class="example-chip-list" appearance="fill">
+  <mat-label>{{ label }}</mat-label>
+  <mat-chip-list #chipList aria-label="Fruit selection">
+    <mat-chip
+      *ngFor="let tag of selectedTags"
+      (removed)="remove(tag)">
+      {{tag}}
+      <button matChipRemove>
+        <mat-icon>cancel</mat-icon>
+      </button>
+    </mat-chip>
+    <input
+      #tagInput
+      [formControl]="tagControl"
+      [matAutocomplete]="auto"
+      [matChipInputFor]="chipList"
+      [matChipInputSeparatorKeyCodes]=""
+      (matChipInputTokenEnd)="add($event)">
+  </mat-chip-list>
+  <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+    <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+      {{ tag }}
+    </mat-option>
+  </mat-autocomplete>
+</mat-form-field>

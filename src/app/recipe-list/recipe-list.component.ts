@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { FormControl, FormGroup, UntypedFormGroup } from '@angular/forms';
 import { Subject, Subscription, takeUntil } from 'rxjs';
 import { SubSink } from 'subsink';
 
@@ -21,6 +22,7 @@ export class RecipeListComponent implements OnInit, OnDestroy {
 
   tagsSubscription: Subscription;
   recipeSubscription: Subscription;
+  formGroup: FormGroup;
 
   private subs: SubSink = new SubSink();
 
@@ -29,17 +31,34 @@ export class RecipeListComponent implements OnInit, OnDestroy {
     private authService: AuthService) { }
 
   ngOnInit() {
-    // this.tagsSubscription = this.httpClient.get<string[]>('/api/tags')
-    //   .subscribe((tags: string[]) => {
-    //     this.allTags = tags;
-    //   });
-
     this.subs.sink = this.recipeService.getAllTags()
       .subscribe((tags: string[]) => {
         this.allTags = tags;
       });
 
     this.getRecipesByTag();
+
+    this.formGroup = new FormGroup({
+      tags: new FormControl()
+    });
+
+    this.formGroup.controls['tags'].valueChanges.subscribe((value) => {
+      console.log(value);
+    })
+  }
+
+  remove(tag) {
+    let index = this.selectedTags.indexOf(tag);
+    this.selectedTags.splice(index, 1);
+  }
+
+  add(ev) {
+    this.selectedTags.push(ev.value);
+  }
+
+  selected(ev) {
+    let tag = ev.option.value;
+    this.selectedTags.push(tag);
   }
 
   onSearchTag(event) {

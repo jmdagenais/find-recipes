@@ -1,7 +1,9 @@
-import { AfterViewInit, Component, forwardRef, OnInit, ViewChild } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { AfterViewInit, Component, ElementRef, forwardRef, Input, OnInit, ViewChild } from '@angular/core';
+import { ControlValueAccessor, FormControl, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { MatAutocomplete, MatAutocompleteSelectedEvent, MatAutocompleteTrigger } from '@angular/material/autocomplete';
+import { MatChipInputEvent } from '@angular/material/chips';
 import { Chips } from 'primeng/chips';
-import { fromEvent, map } from 'rxjs';
+import { fromEvent, map, Observable, startWith } from 'rxjs';
 
 import { RecipeService } from '../shared/recipe.service';
 
@@ -18,12 +20,18 @@ import { RecipeService } from '../shared/recipe.service';
   ]
 })
 export class TagSelectorComponent implements AfterViewInit, OnInit, ControlValueAccessor {
-
-  @ViewChild(Chips) selector: Chips;
+  @Input() allowNew: boolean = false;
+  @Input() placeholder: string = '';
+  @Input() label: string = 'Filtrer par catégories ou ingrédients';
+  @ViewChild(MatAutocompleteTrigger) autoComplete: MatAutocompleteTrigger;
+  @ViewChild('tagInput') tagInput: ElementRef<HTMLInputElement>;
   textInput: HTMLInputElement = null;
   allTags: string[] = [];
-  suggestions: string[] = [];
   selectedTags: string[] = [];
+  filteredTags: Observable<string[]>;
+
+  tagControl: FormControl = new FormControl();
+
   propagateChange = (_: any) => { };
 
   constructor(private recipeService: RecipeService) {
@@ -31,38 +39,59 @@ export class TagSelectorComponent implements AfterViewInit, OnInit, ControlValue
       .subscribe((tags: string[]) => {
         this.allTags = tags;
       });
+
+    this.filteredTags = this.tagControl.valueChanges.pipe(
+      startWith(null),
+      map((tag: string | null) => (tag ? this._filter(tag) : this.allTags.slice())),
+    )
   }
 
   ngOnInit() {
 
   }
 
-  selectTag(tag) {
-    this.selector.addItem(null, tag, false); // ou true comme 3e parametre ?
-    this.textInput.value = '';
-    this.suggestions = [];
+  add(event: MatChipInputEvent): void {
+    const tag = event.value;
+    if (this.allowNew && tag?.length > 0) {
+      this.selectedTags.push(tag);
+      this.propagateChange(this.selectedTags);
+
+      event.chipInput.clear();
+      this.tagControl.setValue(null);
+      this.tagInput.nativeElement.value = '';
+      this.autoComplete.closePanel();
+    }
+  }
+
+  remove(tag: string): void {
+    let index = this.selectedTags.indexOf(tag);
+    this.selectedTags.splice(index, 1);
+    this.propagateChange(this.selectedTags);
+  }
+
+  selected(event: MatAutocompleteSelectedEvent): void {
+    let tag = event.option.value;
+    this.selectedTags.push(tag);
+
+    this.tagInput.nativeElement.value = '';
+    this.tagControl.setValue(null);
+
+    this.propagateChange(this.selectedTags);
+  }
+
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    return this.allTags.filter(tag => tag.toLowerCase().includes(filterValue));
   }
 
   ngAfterViewInit() {
-    this.textInput = document.querySelector('.ui-chips-input-token > input');
-    // hack to have selector take full width
-    document.querySelector('.ui-chips > ul')['style'].width = '100%';
-    fromEvent(this.textInput, 'keyup')
-      .pipe(map((e: any) => {
-        return e.target.value;
-      }))
-      .subscribe(value => {
-        // console.log(value);
-        this.suggestions = this.allTags.filter(tag => {
-          return value && tag.indexOf(value) === 0 && (this.selector.value ? this.selector.value.indexOf(tag) === -1 : true);
-        });
-      });
+
   }
 
   writeValue(value: any): void {
     if (value !== undefined) {
-      // this.selectedTags = value;
-      this.selector.value = value;
+      this.selectedTags = value;
     }
   }
 
@@ -71,9 +100,5 @@ export class TagSelectorComponent implements AfterViewInit, OnInit, ControlValue
   }
 
   registerOnTouched(fn: any): void { }
-
-  changeItemList(evt) {
-    this.propagateChange(this.selector.value);
-  }
 
 }

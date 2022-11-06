@@ -1,3 +1,42 @@
 .main-page {
   padding: 0 12px;
 }
+
+.top-bar {
+  height: 90px;
+  width: 100%;
+  margin: 0;
+  background-color: #3f51b5; //#306965; //#11287A;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  .title {
+    width: 100%;
+    max-width: 1110px;
+    margin: auto;
+    
+    a {
+      text-decoration: none;
+  
+      &:hover {
+        text-decoration: none;
+      }
+    }
+  }
+
+  a {
+    color: white;
+
+    &.logout {
+      padding-right: 16px;
+    }
+  }
+
+  h1 {
+    color: white;
+    margin: 0 10px;
+    font-size: 36pt;
+    font-family: 'Sriracha', cursive;
+  }
+}

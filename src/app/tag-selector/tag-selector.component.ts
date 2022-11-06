@@ -53,7 +53,10 @@ export class TagSelectorComponent implements AfterViewInit, OnInit, ControlValue
   add(event: MatChipInputEvent): void {
     const tag = event.value;
     if (this.allowNew && tag?.length > 0) {
-      this.selectedTags.push(tag);
+      // add the tag only if not already present in the list
+      if (this.selectedTags.indexOf(tag) == -1) {
+        this.selectedTags.push(tag);
+      }
       this.propagateChange(this.selectedTags);
 
       event.chipInput.clear();
@@ -71,7 +74,11 @@ export class TagSelectorComponent implements AfterViewInit, OnInit, ControlValue
 
   selected(event: MatAutocompleteSelectedEvent): void {
     let tag = event.option.value;
-    this.selectedTags.push(tag);
+    // add the tag only if not already present in the list
+    if (this.selectedTags.indexOf(tag) == -1) {
+      this.selectedTags.push(tag);
+    }
+
 
     this.tagInput.nativeElement.value = '';
     this.tagControl.setValue(null);
@@ -90,7 +97,7 @@ export class TagSelectorComponent implements AfterViewInit, OnInit, ControlValue
   }
 
   writeValue(value: any): void {
-    if (value !== undefined) {
+    if (value) {
       this.selectedTags = value;
     }
   }

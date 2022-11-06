@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { FormGroup, NgForm } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Observable, Subject, takeUntil } from 'rxjs';
+import { SubSink } from 'subsink';
 
 import { environment } from '../../environments/environment';
 import { Recipe } from '../recipe.model';
@@ -26,6 +27,9 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
   public hasError = false;
   public editMode = false;
   public extraTimeLabelEditing = false;
+  formGroup: FormGroup;
+
+  private subs: SubSink = new SubSink();
 
   constructor(
     private recipeService: RecipeService,
@@ -33,24 +37,44 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
     private router: Router) { }
 
   ngOnInit() {
-    this.route.params
-      .pipe(takeUntil(this.unsubscribe))
-      .subscribe((params: Params) => {
-        if (params['id']) {
-          this.editMode = true;
-          this.recipeService.getRecipe(params['id'])
-            .pipe(takeUntil(this.unsubscribe))
-            .subscribe((value: Recipe) => {
-              this.recipe = value;
-              if (this.recipe.extraTime > 0) {
-                this.showExtraTime = true
-              }
-              this.hasError = false;
-            }, (error) => {
-              this.hasError = true;
-            });
-        }
-      });
+    const recipeId = this.route.snapshot.params['id'];
+    if (recipeId) {
+      this.editMode = true;
+      this.recipeService.getRecipe(recipeId)
+        .pipe(takeUntil(this.unsubscribe))
+        .subscribe({
+          next: (value: Recipe) => {
+            this.recipe = value;
+            if (this.recipe.extraTime > 0) {
+              this.showExtraTime = true
+            }
+            this.hasError = false;
+          }, error: (error) => {
+            this.hasError = true;
+          }
+        });
+    } else {
+
+    }
+    // this.subs.sink = this.route.params
+    //   .subscribe((params: Params) => {
+    //     if (params['id']) {
+    //       this.editMode = true;
+    //       this.recipeService.getRecipe(params['id'])
+    //         .pipe(takeUntil(this.unsubscribe))
+    //         .subscribe({
+    //           next: (value: Recipe) => {
+    //             this.recipe = value;
+    //             if (this.recipe.extraTime > 0) {
+    //               this.showExtraTime = true
+    //             }
+    //             this.hasError = false;
+    //           }, error: (error) => {
+    //             this.hasError = true;
+    //           }
+    //         });
+    //     }
+    //   });
   }
 
   // addTag(tag: string) {
@@ -66,10 +90,9 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
   }
 
   onExtraTimeLabelKeypress(event: KeyboardEvent) {
-    if (event.keyCode === 13) {
+    if (event.key === 'Enter') {
       event.preventDefault();
       this.extraTimeLabelEditing = false;
-      console.log('wazaaa!')
     }
   }
 
@@ -87,8 +110,7 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
         observable = this.recipeService.createRecipe(new Recipe(form.value));
       }
 
-      observable
-        .pipe(takeUntil(this.unsubscribe))
+      this.subs.sink = observable
         .subscribe((val) => {
           form.reset();
           this.tags = [];
@@ -106,6 +128,6 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    this.unsubscribe.next(true);
+    this.subs.unsubscribe();
   }
 }

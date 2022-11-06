@@ -4,6 +4,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -31,6 +32,14 @@ const routes: Route[] = [
   { path: 'admin', component: AdminComponent }
 ];
 
+const materialModules = [
+  MatAutocompleteModule,
+  MatFormFieldModule,
+  MatChipsModule,
+  MatIconModule,
+  MatButtonModule
+];
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -50,10 +59,7 @@ const routes: Route[] = [
     ReactiveFormsModule,
     RouterModule.forRoot(routes),
     PrimeNgModule,
-    MatAutocompleteModule,
-    MatFormFieldModule,
-    MatChipsModule,
-    MatIconModule,
+    ...materialModules
   ],
   providers: [RecipeService, ConfirmationService],
   bootstrap: [AppComponent]

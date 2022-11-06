@@ -1,6 +1,7 @@
-import {Component} from '@angular/core';
-import {AuthService} from '../auth/auth.service';
-import {Router} from '@angular/router';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+
+import { AuthService } from '../auth/auth.service';
 
 @Component({
   selector: 'app-admin',
@@ -24,10 +25,12 @@ export class AdminComponent {
 
   submit() {
     this.authService.authenticate(this.password)
-      .subscribe((value) => {
-        this.router.navigate(['/']);
-      }, (err) => {
-        // TODO: display an error msg
+      .subscribe({
+        next: (value) => {
+          this.router.navigate(['/']);
+        }, error: (err) => {
+          // TODO: display an error msg
+        }
       });
   }
 

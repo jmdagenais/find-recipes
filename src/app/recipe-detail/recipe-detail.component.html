@@ -30,18 +30,19 @@
   </div>
 
   <div>
-    <button pButton 
-      class="ui-button-secondary" 
-      routerLink="edit" 
-      label="Modifier" 
+    <button mat-raised-button 
+      color="primary"
+      routerLink="edit"  
       *ngIf="isAuthenticated()">
+      Modifier
     </button>
 
-    <button pButton 
-      class="ui-button-danger" 
+    <button mat-raised-button 
+      color="warn"
       (click)="confirmDelete()" 
-      label="Supprimer" 
-      *ngIf="isAuthenticated()"></button>
+      *ngIf="isAuthenticated()">
+      Supprimer
+    </button>
   </div>
 
   <p-confirmDialog #dialog header="Confirmation" icon="pi pi-exclamation-triangle">

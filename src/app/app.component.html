@@ -2,6 +2,9 @@
   <div class="title">
     <a routerLink="/"><h1>Les recettes de JM</h1></a>
   </div>
+  <div>
+    <a href="javascript:void(0)" class="logout" (click)="logout()" *ngIf="isAuthenticated()">Déconnecter</a>
+  </div>
 </div>
 <div class="main-content">
   <div class="main-page">

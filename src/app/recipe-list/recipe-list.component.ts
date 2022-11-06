@@ -22,7 +22,9 @@ export class RecipeListComponent implements OnInit, OnDestroy {
 
   tagsSubscription: Subscription;
   recipeSubscription: Subscription;
-  formGroup: FormGroup;
+  // formGroup: FormGroup;
+
+  tagsControl: FormControl = new FormControl();
 
   private subs: SubSink = new SubSink();
 
@@ -38,27 +40,10 @@ export class RecipeListComponent implements OnInit, OnDestroy {
 
     this.getRecipesByTag();
 
-    this.formGroup = new FormGroup({
-      tags: new FormControl()
-    });
-
-    this.formGroup.controls['tags'].valueChanges.subscribe((value) => {
-      console.log(value);
+    this.tagsControl.valueChanges.subscribe((value) => {
+      this.selectedTags = value;
+      this.getRecipesByTag();
     })
-  }
-
-  remove(tag) {
-    let index = this.selectedTags.indexOf(tag);
-    this.selectedTags.splice(index, 1);
-  }
-
-  add(ev) {
-    this.selectedTags.push(ev.value);
-  }
-
-  selected(ev) {
-    let tag = ev.option.value;
-    this.selectedTags.push(tag);
   }
 
   onSearchTag(event) {
@@ -96,8 +81,9 @@ export class RecipeListComponent implements OnInit, OnDestroy {
   }
 
   onSelectTag(tag: string) {
-    if (!this.selectedTags.includes(tag)) {
-      this.selectedTags.push(tag);
+    const existingTags = this.tagsControl.value;
+    if (!existingTags.includes(tag)) {
+      this.tagsControl.setValue([...existingTags, tag]);
       this.getRecipesByTag();
     }
   }

@@ -8,37 +8,6 @@
   padding-bottom: 24px;
 }
 
-.top-bar {
-  height: 90px;
-  width: 100%;
-  margin: 0;
-  background-color: #306965; //#11287A;
-  padding-top: 15px;
-
-  .title {
-    width: 100%;
-    max-width: 1110px;
-    margin: auto;
-  }
-
-  a {
-    text-decoration: none;
-    font-family: 'Sriracha', cursive;
-    position: relative;
-    top: 16px;
-
-    &:hover {
-      text-decoration: none;
-    }
-  }
-
-  h1 {
-    color: white;
-    margin: 0 10px;
-    font-size: 36pt;
-  }
-}
-
 .font-normal {
   font-weight: normal;
 }

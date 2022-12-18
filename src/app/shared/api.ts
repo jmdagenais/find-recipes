@@ -14,7 +14,11 @@ export class Api {
 
   public set token(value: string) {
     this._token = value;
-    this.headers = new HttpHeaders({ 'token': this._token });
+    if (value) {
+      this.headers = new HttpHeaders({ 'token': this._token });
+    } else {
+      this.headers = null;
+    }
   }
 
   constructor(public http: HttpClient) { }

@@ -2,13 +2,15 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatButtonModule } from '@angular/material/button';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { Route, RouterModule } from '@angular/router';
+import { NgSelectModule } from '@ng-select/ng-select';
 import { ConfirmationService } from 'primeng/api';
 
 import { AddRecipeComponent } from './add-recipe/add-recipe.component';
@@ -37,7 +39,8 @@ const materialModules = [
   MatFormFieldModule,
   MatChipsModule,
   MatIconModule,
-  MatButtonModule
+  MatButtonModule,
+  MatDialogModule
 ];
 
 @NgModule({
@@ -59,6 +62,7 @@ const materialModules = [
     ReactiveFormsModule,
     RouterModule.forRoot(routes),
     PrimeNgModule,
+    NgSelectModule,
     ...materialModules
   ],
   providers: [RecipeService, ConfirmationService],

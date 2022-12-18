@@ -1,6 +1,12 @@
 <!-- <span>Filtrer par catégorie</span> -->
 <span class="ui-fluid">
-  <app-tag-selector [formControl]="tagsControl"></app-tag-selector>
+  <!-- <app-tag-selector [formControl]="tagsControl"></app-tag-selector> -->
+  <ng-select 
+    [formControl]="tagsControl"
+    [multiple]="true"
+    [items]="allTags"
+    appearance="outline"
+    ></ng-select>
 
   <div class="d-flex justify-content-between">
     <!--<h4>Recipes:</h4>-->

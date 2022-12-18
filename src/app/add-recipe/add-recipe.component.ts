@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { FormGroup, NgForm } from '@angular/forms';
+import { FormControl, FormGroup, NgForm } from '@angular/forms';
 import { DomSanitizer } from '@angular/platform-browser';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { Observable, Subject, takeUntil } from 'rxjs';
@@ -19,14 +19,13 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
 
   @ViewChild('f') recipeForm: NgForm;
   private tags: string[] = [];
-  private unsubscribe: Subject<any> = new Subject();
-  // public currentTag: string = '';
-  public recipe: Recipe = new Recipe();
-  public extraTime: { time: number, name: string } = { time: 0, name: '' };
-  public showExtraTime = false;
-  public hasError = false;
-  public editMode = false;
-  public extraTimeLabelEditing = false;
+  recipe: Recipe = new Recipe();
+  extraTime: { time: number, name: string } = { time: 0, name: '' };
+  showExtraTime = false;
+  hasError = false;
+  editMode = false;
+  extraTimeLabelEditing = false;
+  allTags: string[] = [];
   formGroup: FormGroup;
 
   private subs: SubSink = new SubSink();
@@ -40,8 +39,7 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
     const recipeId = this.route.snapshot.params['id'];
     if (recipeId) {
       this.editMode = true;
-      this.recipeService.getRecipe(recipeId)
-        .pipe(takeUntil(this.unsubscribe))
+      this.subs.sink = this.recipeService.getRecipe(recipeId)
         .subscribe({
           next: (value: Recipe) => {
             this.recipe = value;
@@ -49,32 +47,34 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
               this.showExtraTime = true
             }
             this.hasError = false;
+            this.buildFormGroup();
           }, error: (error) => {
             this.hasError = true;
           }
         });
     } else {
-
+      this.buildFormGroup();
     }
-    // this.subs.sink = this.route.params
-    //   .subscribe((params: Params) => {
-    //     if (params['id']) {
-    //       this.editMode = true;
-    //       this.recipeService.getRecipe(params['id'])
-    //         .pipe(takeUntil(this.unsubscribe))
-    //         .subscribe({
-    //           next: (value: Recipe) => {
-    //             this.recipe = value;
-    //             if (this.recipe.extraTime > 0) {
-    //               this.showExtraTime = true
-    //             }
-    //             this.hasError = false;
-    //           }, error: (error) => {
-    //             this.hasError = true;
-    //           }
-    //         });
-    //     }
-    //   });
+
+    this.subs.sink = this.recipeService.getAllTags()
+      .subscribe((tags: string[]) => {
+        this.allTags = tags;
+      });
+  }
+
+  buildFormGroup() {
+    this.formGroup = new FormGroup({
+      name: new FormControl(this.recipe.name),
+      nbPortions: new FormControl(this.recipe.nbPortions),
+      ingredients: new FormControl(this.recipe.ingredients),
+      preparation: new FormControl(this.recipe.preparation),
+      tags: new FormControl(this.recipe.tags),
+      prepTime: new FormControl(this.recipe.prepTime),
+      cookTime: new FormControl(this.recipe.cookTime),
+      extraTime: new FormControl(this.recipe.extraTime),
+      extraTimeLabel: new FormControl(this.recipe.extraTimeLabel),
+      imageUrl: new FormControl(this.recipe.imageUrl),
+    })
   }
 
   // addTag(tag: string) {
@@ -96,8 +96,8 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
     }
   }
 
-  submit(form: NgForm) {
-    if (form.valid) {
+  submit() {
+    if (this.formGroup.valid) {
       let observable: Observable<any>;
 
       // if (this.showExtraTime) {
@@ -105,16 +105,21 @@ export class AddRecipeComponent implements OnInit, OnDestroy {
       // }
       // save recipe to the DB
       if (this.editMode) {
-        observable = this.recipeService.updateRecipe(this.recipe._id, this.recipe);
+        observable = this.recipeService.updateRecipe(this.recipe._id, this.formGroup.value);
       } else {
-        observable = this.recipeService.createRecipe(new Recipe(form.value));
+        observable = this.recipeService.createRecipe(new Recipe(this.formGroup.value));
       }
 
       this.subs.sink = observable
-        .subscribe((val) => {
-          form.reset();
-          this.tags = [];
-          this.done();
+        .subscribe({
+          next: (val) => {
+            this.formGroup.reset();
+            this.tags = [];
+            this.done();
+          },
+          error: (err) => {
+            this.hasError = true;
+          }
         });
     }
   }

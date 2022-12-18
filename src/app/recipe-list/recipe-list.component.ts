@@ -81,7 +81,7 @@ export class RecipeListComponent implements OnInit, OnDestroy {
   }
 
   onSelectTag(tag: string) {
-    const existingTags = this.tagsControl.value;
+    const existingTags = this.tagsControl.value || [];
     if (!existingTags.includes(tag)) {
       this.tagsControl.setValue([...existingTags, tag]);
       this.getRecipesByTag();

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { ConfirmationService } from 'primeng/api';
@@ -19,11 +20,14 @@ export class RecipeDetailComponent implements OnInit {
   recipe: Recipe;
   ingredients: SafeHtml;
   preparation: SafeHtml;
+
+  @ViewChild('confirmDeleteDialog') confirmDeleteDialog: any;
+
   constructor(private recipeService: RecipeService,
     private authService: AuthService,
     private route: ActivatedRoute,
     private router: Router,
-    private confirmationService: ConfirmationService) { }
+    private matDialog: MatDialog) { }
 
   ngOnInit() {
     this.route.params
@@ -44,9 +48,10 @@ export class RecipeDetailComponent implements OnInit {
   }
 
   confirmDelete() {
-    this.confirmationService.confirm({
-      message: 'Voulez-vous vraiment supprimer cette recette?',
-      accept: () => {
+    const dialog: MatDialogRef<boolean> = this.matDialog.open(this.confirmDeleteDialog);
+
+    dialog.afterClosed().subscribe(value => {
+      if (value) {
         this.deleteRecipe();
       }
     });

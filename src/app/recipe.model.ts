@@ -12,8 +12,9 @@ export class Recipe {
   public extraTime: number = 0;
   public extraTimeLabel: string = 'Temps extra';
   public imageUrl: string;
-  public imageData: string;
   public tip: string;
+  public url: string;
+  public pdfUrl: string;
 
   public get image(): string {
     return this.imageUrl || 'assets/images/assiette.jpg';
@@ -32,8 +33,9 @@ export class Recipe {
       this.extraTime = data.extraTime;
       this.extraTimeLabel = data.extraTimeLabel || 'Temps extra';
       this.imageUrl = data.imageUrl;
-      this.imageData = data.imageData;
       this.tip = data.tip;
+      this.url = data.url;
+      this.pdfUrl = data.pdfUrl;
     }
   }
 

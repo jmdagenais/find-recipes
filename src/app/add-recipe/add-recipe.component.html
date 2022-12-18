@@ -1,4 +1,4 @@
-<form #f="ngForm" (ngSubmit)="submit(f)">
+<form (ngSubmit)="submit()" [formGroup]="formGroup" *ngIf="formGroup">
   <div class="row">
     <div class="form-group col-md-12">
       <label for="recipeName">Nom</label>
@@ -7,11 +7,8 @@
         type="text"
         id="recipeName"
         name="name"
-        [(ngModel)]="recipe.name"
-        #name="ngModel"
-        required
-        pInputText>
-      <p-message severity="error" text="Ce champ est requis" [hidden]="name.valid || name.pristine"></p-message>
+        formControlName="name">
+      <p-message severity="error" text="Ce champ est requis" [hidden]="formGroup.controls['name'].valid || formGroup.controls['name'].pristine"></p-message>
     </div>
   </div>
 
@@ -24,8 +21,7 @@
         id="imageUrl"
         name="imageUrl"
         placeholder="URL de l'image"
-        [(ngModel)]="recipe.imageUrl"
-        pInputText>
+        formControlName="imageUrl">
     </div>
     <div class="col-md-7 col-12">
       <div class="time-input">
@@ -34,9 +30,8 @@
           type="number"
           id="nbPortions"
           name="nbPortions"
-          [(ngModel)]="recipe.nbPortions"
-          min="1"
-          pInputText>
+          formControlName="nbPortions"
+          min="1">
       </div>
       <div class="time-input">
         <label>Temps de préparation:</label>
@@ -44,9 +39,7 @@
           type="number"
           id="prepTime"
           name="prepTime"
-          [(ngModel)]="recipe.prepTime"
-          required
-          pInputText>
+          formControlName="prepTime">
         min.
       </div>
       <div class="time-input">
@@ -55,8 +48,7 @@
           type="number"
           id="cookTime"
           name="cookTime"
-          [(ngModel)]="recipe.cookTime"
-          pInputText>
+          formControlName="cookTime">
         min.
       </div>
       <button type="button" *ngIf="!showExtraTime" (click)="showExtraTime = true" mat-raised-button>+ de temps</button>
@@ -65,7 +57,7 @@
           class="extraTimeLabel" 
           (click)="extraTimeLabelEditing = true"
           *ngIf="!extraTimeLabelEditing">
-          {{recipe.extraTimeLabel}}: <i class="fa fa-pencil"></i>
+          {{formGroup.value.extraTimeLabel}}: <i class="fa fa-pencil"></i>
         </label>
 
         <input
@@ -73,15 +65,14 @@
           type="text"
           id="extraTimeLabel"
           name="extraTimeLabel"
-          [(ngModel)]="recipe.extraTimeLabel"
-          (keypress)="onExtraTimeLabelKeypress($event)"
-          pInputText>
+          formControlName="extraTimeLabel"
+          (keypress)="onExtraTimeLabelKeypress($event)">
+
         <input
           type="number"
           id="extraTime"
           name="extraTime"
-          [(ngModel)]="recipe.extraTime"
-          pInputText>
+          formControlName="extraTime">
         min.
       </div>
     </div>
@@ -93,9 +84,8 @@
       class="form-control"
       id="ingredients"
       name="ingredients"
-      [(ngModel)]="recipe.ingredients"
-      required
-      pInputTextarea></textarea>
+      formControlName="ingredients">
+    </textarea>
   </div>
   <div class="form-group">
     <label for="preparation">Préparation:</label>
@@ -103,16 +93,20 @@
       class="form-control"
       id="preparation"
       name="preparation"
-      [(ngModel)]="recipe.preparation"
-      required
-      pInputTextarea></textarea>
+      formControlName="preparation"></textarea>
   </div>
   <div class="form-group">
     <label for="tags">Sélectionner des étiquettes</label>
-    <app-tag-selector id="tags" [(ngModel)]="recipe.tags" name="tags"></app-tag-selector>
+    <!-- <app-tag-selector id="tags" [(ngModel)]="recipe.tags" name="tags"></app-tag-selector> -->
+    <ng-select 
+      formControlName="tags"
+      [items]="allTags"
+      [multiple]="true"
+      [addTag]="true">
+    </ng-select>
   </div>
   <div class="form-group">
-    <button type="submit" mat-raised-button color="primary">Ok</button>
+    <button type="submit" class="save-button" mat-raised-button color="primary">Ok</button>
     <button type="button" mat-raised-button (click)="done()">Annuler</button>
   </div>
 </form>
